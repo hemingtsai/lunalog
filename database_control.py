@@ -2,7 +2,7 @@ import sqlite3
 
 from fastapi import HTTPException
 
-def init_database():
+def init_database() -> None:
     global con 
     con = sqlite3.connect("database.db", check_same_thread=False)
     cur = con.cursor()
@@ -18,7 +18,7 @@ def init_database():
     
     con.commit()
 
-def get_post(post_id:int):
+def get_post(post_id:int) -> dict[str:str|int] | None:
     cur = con.cursor()
     res = cur.execute(f"SELECT * FROM POSTS WHERE ID = {post_id};").fetchone()
     if res is None:
@@ -26,6 +26,7 @@ def get_post(post_id:int):
     else:
         (_,title,time,content) = res
         return {"title":title,"time":time,"content":content}
+    return None
 
-def close_database():
+def close_database() -> None:
     con.close()
