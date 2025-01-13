@@ -8,6 +8,7 @@
 pyvenv.cfg
 .venv
 pip-selfcheck.json
+__pycache__
 
 # SQLite Database
 database.db
