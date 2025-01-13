@@ -26,7 +26,6 @@ def get_post(post_id:int) -> dict[str:str|int] | None:
     else:
         (_,title,time,content) = res
         return {"title":title,"time":time,"content":content}
-    return None
 
 def close_database() -> None:
     con.close()
