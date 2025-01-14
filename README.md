@@ -8,7 +8,7 @@ It's a modern blog system based Python and FastAPI.
 
 ***Warning***: It's only a backend. I like to call it "Blog System Core". You should compose a frontend website to use it.
 
-## Technology
+## Technology Stack
 
 |Item|Software|
 |-----------|---------------|
