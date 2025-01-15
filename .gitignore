@@ -9,3 +9,10 @@ pyvenv.cfg
 .venv
 pip-selfcheck.json
 __pycache__
+
+# Markdown Files
+data
+data/*
+
+# Configurion files
+config.json

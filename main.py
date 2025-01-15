@@ -1,21 +1,29 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from fastapi import FastAPI
 
-import database_control
+import blog_manager
+
+blog_manager_c: blog_manager.BlogManager
+
 
 @asynccontextmanager
-async def lifespan(app:FastAPI):
-    database_control.init_database()
+async def lifespan(app: FastAPI):
+    global bm
+
+    bm = blog_manager.BlogManager()
 
     yield
-    
-    database_control.close_database()
+
 
 app = FastAPI(lifespan=lifespan)
 
+
 @app.get("/posts/{post_id}")
-def read_post(post_id:int):
-    return database_control.get_post(post_id)
-        
+def read_post(post_id: int):
+    return bm.get_post(post_id)
+
+
+@app.get("/posts_list")
+def read_posts_list():
+    return bm.get_post_list()
