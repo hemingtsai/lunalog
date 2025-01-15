@@ -14,4 +14,5 @@ It's a modern blog system based Python and FastAPI.
 |-----------|---------------|
 |Programming Language|Python|
 |Backend Framework|FastAPI|
-|Database|SQLite|
+
+We don't use any database system, we use filesystem and json to save blog data.
