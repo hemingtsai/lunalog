@@ -10,5 +10,9 @@ pyvenv.cfg
 pip-selfcheck.json
 __pycache__
 
-# SQLite Database
-database.db
+# Markdown Files
+data
+data/*
+
+# Configurion files
+config.json
