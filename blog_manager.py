@@ -32,12 +32,12 @@ class BlogManager():
     def get_post(self, post_id: int):
         result: str = ""
 
-        #try:
-        with open(f"./data/posts/{self.posts_data[post_id]['time']['year']}/{self.posts_data[post_id]['time']['month']}/{self.posts_data[post_id]['time']['day']}.md", "r") as post:
-            for i in post.readlines():
-                result += i
-        #except:
-        #    raise HTTPException(status_code=404, detail="Post not found")
+        try:
+            with open(f"./data/posts/{self.posts_data[post_id]['time']['year']}/{self.posts_data[post_id]['time']['month']}/{self.posts_data[post_id]['time']['day']}.md", "r") as post:
+                for i in post.readlines():
+                    result += i
+        except:
+            raise HTTPException(status_code=404, detail="Post not found")
 
         return result
 
