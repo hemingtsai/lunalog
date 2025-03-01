@@ -25,7 +25,10 @@ class BlogManager():
         self.posts_data = json.loads(open("./data/posts.json", "r").read())
 
     def update_posts(self):
-        os.system(f"git clone $BLOG_REPO data")
+        if os.path.exists("data/.git"):
+            os.system(f"git clone $BLOG_REPO data")
+        else:
+            os.system(f"cd data; git pull; cd ..")
 
     def get_post(self, post_id: int):
         result: str = ""

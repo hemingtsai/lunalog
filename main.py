@@ -19,6 +19,7 @@ async def lifespan(app: FastAPI):
     global bm
 
     bm = blog_manager.BlogManager()
+    bm.update_posts()
 
     yield
 
@@ -72,15 +73,7 @@ async def github_webhook(request: Request):
     if event_type == "push":
         # 处理 push 事件
         print("Received push event")
-        print(payload)
-    elif event_type == "pull_request":
-        # 处理 pull_request 事件
-        print("Received pull request event")
-        print(payload)
-    else:
-        # 处理其他事件
-        print(f"Received unknown event: {event_type}")
-
+        bm.update_posts()
     # 返回成功响应
     return {"status": "ok"}
 
