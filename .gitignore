@@ -15,4 +15,4 @@ data
 data/*
 
 # Configurion files
-config.json
+.env

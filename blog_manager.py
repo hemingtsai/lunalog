@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 import json
-
 from fastapi import HTTPException
 
 
@@ -23,11 +22,10 @@ class BlogManager():
             os.mkdir("data")
 
         # Open posts database
-        self.config = json.loads(open("./config.json").read())
         self.posts_data = json.loads(open("./data/posts.json", "r").read())
 
     def update_posts(self):
-        os.system(f"git clone {self.config['repo']} data")
+        os.system(f"git clone $BLOG_REPO data")
 
     def get_post(self, post_id: int):
         result: str = ""
