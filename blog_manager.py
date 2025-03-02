@@ -16,17 +16,22 @@ class Post:
 
 
 class BlogManager():
-    def __init__(self):
+    def __init__(self, config):
+
+        self.config = config
         # Check data direoctry exists
         if not Path("./data").is_dir():
             os.mkdir("data")
+        
+        self.update_posts()
 
         # Open posts database
         self.posts_data = json.loads(open("./data/posts.json", "r").read())
 
     def update_posts(self):
-        if os.path.exists("data/.git"):
-            os.system(f"git clone $BLOG_REPO data")
+        repo = self.config["blog_repo"]
+        if not os.path.exists("data/.git"):
+            os.system(f"git clone {repo} data")
         else:
             os.system(f"cd data; git pull; cd ..")
 

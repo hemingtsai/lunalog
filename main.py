@@ -2,23 +2,20 @@ from contextlib import asynccontextmanager
 import json
 import os
 from fastapi import FastAPI, Request, HTTPException
-from dotenv import load_dotenv
 import blog_manager
 import hashlib
 import hmac
 
-# Load .env configure files.
-load_dotenv()
-
-
-blog_manager_c: blog_manager.BlogManager
-
+if not os.path.exists("config/config.json"):
+    print("Configure file not found")
+    exit(1)
+config = json.loads(open("config/config.json","r").read())
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global bm
 
-    bm = blog_manager.BlogManager()
+    bm = blog_manager.BlogManager(config)
     bm.update_posts()
 
     yield
@@ -48,7 +45,7 @@ def verify_github_signature(request: Request, body: bytes):
         raise HTTPException(
             status_code=401, detail="Invalid signature algorithm")
 
-    mac = hmac.new(os.environ["GITHUB_WEBHOOK_SECRET"].encode(),
+    mac = hmac.new(config["github_webhook_secret"].encode(),
                    msg=body, digestmod=hashlib.sha256)
     expected_signature = mac.hexdigest()
 
