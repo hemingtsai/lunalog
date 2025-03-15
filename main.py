@@ -1,7 +1,8 @@
 from contextlib import asynccontextmanager
 import json
 import os
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException, Response
+from fastapi.middleware.cors import CORSMiddleware
 import blog_manager
 import hashlib
 import hmac
@@ -9,7 +10,8 @@ import hmac
 if not os.path.exists("config/config.json"):
     print("Configure file not found")
     exit(1)
-config = json.loads(open("config/config.json","r").read())
+config = json.loads(open("config/config.json", "r").read())
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -22,6 +24,15 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=config["cors_allow_origin"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/posts/{post_id}")

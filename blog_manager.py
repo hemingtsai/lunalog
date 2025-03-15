@@ -25,8 +25,6 @@ class BlogManager():
         
         self.update_posts()
 
-        # Open posts database
-        self.posts_data = json.loads(open("./data/posts.json", "r").read())
 
     def update_posts(self):
         repo = self.config["blog_repo"]
@@ -34,6 +32,7 @@ class BlogManager():
             os.system(f"git clone {repo} data")
         else:
             os.system(f"cd data; git pull; cd ..")
+        self.posts_data = json.loads(open("./data/posts.json", "r").read())
 
     def get_post(self, post_id: int):
         result: str = ""
