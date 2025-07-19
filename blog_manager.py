@@ -2,23 +2,18 @@ import os
 from pathlib import Path
 import json
 from fastapi import HTTPException
+from typing import List, Dict, Any
 
 
 class Post:
     def __init__(self, time: int, title: str, content: str):
-        self.time = time
-        self.title = title
-        self.content = content
+        self.time: int = time
+        self.title: str = title
+        self.content: str = content
 
-    time: int
-    title: str
-    content: str
-
-
-class BlogManager():
-    def __init__(self, config):
-
-        self.config = config
+class BlogManager:
+    def __init__(self, config: Dict[str, Any]):
+        self.config: Dict[str, Any] = config
         # Check data direoctry exists
         if not Path("./data").is_dir():
             os.mkdir("data")
@@ -26,15 +21,15 @@ class BlogManager():
         self.update_posts()
 
 
-    def update_posts(self):
-        repo = self.config["blog_repo"]
+    def update_posts(self) -> None:
+        repo: str = self.config["blog_repo"]
         if not os.path.exists("data/.git"):
             os.system(f"git clone {repo} data")
         else:
             os.system(f"cd data; git pull; cd ..")
-        self.posts_data = json.loads(open("./data/posts.json", "r").read())
+        self.posts_data: List[Dict[str, Any]] = json.loads(open("./data/posts.json", "r").read())
 
-    def get_post(self, post_id: int):
+    def get_post(self, post_id: int) -> str:
         result: str = ""
 
         try:
@@ -46,8 +41,8 @@ class BlogManager():
 
         return result
 
-    def get_post_list(self):
-        result: list[dict] = []
+    def get_post_list(self) -> List[Dict[str, Any]]:
+        result: List[Dict[str, Any]] = []
         for i in self.posts_data:
             result.append({
                 "title": i['title'],

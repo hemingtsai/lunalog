@@ -1,11 +1,11 @@
 from contextlib import asynccontextmanager
 import json
 import os
-from fastapi import FastAPI, Request, HTTPException, Response
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import blog_manager
-import hashlib
-import hmac
+from auth import verify_github_signature
+from typing import AsyncGenerator, List, Dict, Any
 
 if not os.path.exists("config/config.json"):
     print("Configure file not found")
@@ -14,7 +14,7 @@ config = json.loads(open("config/config.json", "r").read())
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     global bm
 
     bm = blog_manager.BlogManager(config)
@@ -36,37 +36,17 @@ app.add_middleware(
 
 
 @app.get("/posts/{post_id}")
-def read_post(post_id: int):
+def read_post(post_id: int) -> str:
     return bm.get_post(post_id)
 
 
 @app.get("/posts_list")
-def read_posts_list():
+def read_posts_list() -> List[Dict[str, Any]]:
     return bm.get_post_list()
 
 
-def verify_github_signature(request: Request, body: bytes):
-    signature_header = request.headers.get("X-Hub-Signature-256")
-    if not signature_header:
-        raise HTTPException(
-            status_code=401, detail="No signature header")
-
-    sha_name, signature = signature_header.split("=")
-    if sha_name != "sha256":
-        raise HTTPException(
-            status_code=401, detail="Invalid signature algorithm")
-
-    mac = hmac.new(config["github_webhook_secret"].encode(),
-                   msg=body, digestmod=hashlib.sha256)
-    expected_signature = mac.hexdigest()
-
-    if not hmac.compare_digest(signature, expected_signature):
-        raise HTTPException(
-            status_code=401, detail="Invalid signature")
-
-
 @app.post("/webhook")
-async def github_webhook(request: Request):
+async def github_webhook(request: Request) -> Dict[str, str]:
     # 读取请求体
     body = await request.body()
 
@@ -74,7 +54,7 @@ async def github_webhook(request: Request):
     verify_github_signature(request, body)
 
     # 解析 JSON 数据
-    payload = json.loads(body)
+    payload: Dict[str, Any] = json.loads(body)  # type: ignore
     event_type = request.headers.get("X-GitHub-Event")
 
     # 处理不同的事件类型
