@@ -1,11 +1,13 @@
 from contextlib import asynccontextmanager
 import json
 import os
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 import blog_manager
 from auth import verify_github_signature
 from typing import AsyncGenerator, List, Dict, Any
+
+import platform_data
 
 if not os.path.exists("config/config.json"):
     print("Configure file not found")
@@ -64,6 +66,19 @@ async def github_webhook(request: Request) -> Dict[str, str]:
         bm.update_posts()
     # 返回成功响应
     return {"status": "ok"}
+
+@app.get("/")
+def root() -> str:
+    result: str = ""
+
+    try:
+        with open(f"{platform_data.data_path}{platform_data.sep}homepage.md", "r",encoding="utf-8") as post:
+            for i in post.readlines():
+                result += i
+    except:
+        raise HTTPException(status_code=404, detail="Post not found")
+    
+    return result
 
 if __name__ == "__main__":
     import uvicorn
