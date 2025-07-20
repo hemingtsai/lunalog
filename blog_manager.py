@@ -27,13 +27,13 @@ class BlogManager:
             os.system(f"git clone {repo} data")
         else:
             os.system(f"cd data; git pull; cd ..")
-        self.posts_data: List[Dict[str, Any]] = json.loads(open("./data/posts.json", "r").read())
+        self.posts_data: List[Dict[str, Any]] = json.loads(open("./data/posts.json", "r",encoding="utf-8").read())
 
     def get_post(self, post_id: int) -> str:
         result: str = ""
 
         try:
-            with open(f"./data/posts/{self.posts_data[post_id]['time']['year']}/{self.posts_data[post_id]['time']['month']}/{self.posts_data[post_id]['time']['day']}.md", "r") as post:
+            with open(f"./data/posts/{self.posts_data[post_id]['file']}", "r") as post:
                 for i in post.readlines():
                     result += i
         except:
