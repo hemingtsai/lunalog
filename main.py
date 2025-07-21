@@ -80,6 +80,18 @@ def root() -> str:
     
     return result
 
+@app.get("/website_info")
+def website_info() -> Dict[str, str]:
+    return bm.get_website_info()
+
+@app.get("/special_pages_list")
+def special_pages_list() -> List[Dict[str, Any]]:
+    return bm.get_special_pages_list()
+
+@app.get("/special_pages/{index}")
+def special_page(index: int) -> Dict[str, Any]:
+    return bm.get_special_page(index)
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=3000)

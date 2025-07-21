@@ -28,7 +28,8 @@ class BlogManager:
             os.system(f"git clone {repo} data")
         else:
             os.system(platform_data.update_posts)
-        self.posts_data: List[Dict[str, Any]] = json.loads(open(platform_data.post_json_path, "r",encoding="utf-8").read())
+        self.blog_data= json.loads(open(platform_data.post_json_path, "r",encoding="utf-8").read())
+        self.posts_data: List[Dict[str, Any]] = self.blog_data["posts"]
 
     def get_post(self, post_id: int) -> Dict[str, Any]:
         result: str = ""
@@ -62,3 +63,29 @@ class BlogManager:
                 }
             })
         return result
+    
+    def get_website_info(self) -> Dict[str, Any]:
+        return {
+            "title": self.blog_data["website_info"]["title"],
+            "description": self.blog_data["website_info"]["description"],
+        }
+    
+    def get_special_pages_list(self) -> List[Dict[str, Any]]:
+        result: List[Dict[str, Any]] = []
+        for i in self.blog_data["special_pages"]:
+            result.append({
+                "title": i["title"],
+                "file": i["file"]
+            })
+        return result
+    
+    def get_special_page(self, index: int) -> Dict[str, Any]:
+        return {
+            "title": self.blog_data["special_pages"][index]["title"],
+            "time": {
+                "year": self.blog_data["special_pages"][index]["time"]["year"],
+                "month": self.blog_data["special_pages"][index]["time"]["month"],
+                "day": self.blog_data["special_pages"][index]["time"]["day"]
+            },
+            "content": open(f"{platform_data.special_pages_path}{platform_data.sep}{self.blog_data['special_pages'][index]['file']}", "r",encoding="utf-8").read()
+        }
