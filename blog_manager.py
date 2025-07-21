@@ -30,7 +30,7 @@ class BlogManager:
             os.system(platform_data.update_posts)
         self.posts_data: List[Dict[str, Any]] = json.loads(open(platform_data.post_json_path, "r",encoding="utf-8").read())
 
-    def get_post(self, post_id: int) -> str:
+    def get_post(self, post_id: int) -> Dict[str, Any]:
         result: str = ""
 
         try:
@@ -40,7 +40,15 @@ class BlogManager:
         except:
             raise HTTPException(status_code=404, detail="Post not found")
 
-        return result
+        return {
+                "title": self.posts_data[post_id]['title'],
+                "time": {
+                    "year": self.posts_data[post_id]["time"]["year"],
+                    "month": self.posts_data[post_id]["time"]["month"],
+                    "day": self.posts_data[post_id]["time"]["day"]
+                },
+                "content": result
+            }
 
     def get_post_list(self) -> List[Dict[str, Any]]:
         result: List[Dict[str, Any]] = []

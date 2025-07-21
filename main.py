@@ -38,7 +38,7 @@ app.add_middleware(
 
 
 @app.get("/posts/{post_id}")
-def read_post(post_id: int) -> str:
+def read_post(post_id: int) -> Dict[str, Any]:
     return bm.get_post(post_id)
 
 
