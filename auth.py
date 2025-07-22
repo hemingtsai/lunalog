@@ -1,9 +1,11 @@
 import hashlib
 import hmac
+import json
 from fastapi import Request, HTTPException
 
-# Define your GitHub webhook secret here
-github_webhook_secret = "your_secret_here"
+github_webhook_secret = json.loads(
+    open("config.json", "r", encoding="utf-8").read()
+)["github_webhook_secret"]
 
 def verify_github_signature(request: Request, body: bytes) -> None:
     signature_header = request.headers.get("X-Hub-Signature-256")
