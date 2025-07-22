@@ -4,7 +4,7 @@ import json
 from fastapi import Request, HTTPException
 
 github_webhook_secret = json.loads(
-    open("config.json", "r", encoding="utf-8").read()
+    open("config/config.json", "r", encoding="utf-8").read()
 )["github_webhook_secret"]
 
 def verify_github_signature(request: Request, body: bytes) -> None:
